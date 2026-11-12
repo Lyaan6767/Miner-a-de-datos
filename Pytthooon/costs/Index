@@ -1,0 +1,48 @@
+Actividad de laboratorio 7
+
+Ejercicio 1 Diseño de Persistencia y Serialización
+
+Considero que en primer caso de la bitácora es mejor hacer uso del tipo de archivo texto principalmente porque como se menciona se requiere que esto sea leído por operadores humanos y este tipo de archivo da un formato legible. Ademas, hablando técnicamente el formato de archivo texto da una ventaja de que una vez guardando los archivos con las funciones correspondientes, el archivo prácticamente ya esta liso para ser utilizado y al contrario el binario se tiene que volver a abrir el archivo y traducirlo mediante el compilador que es un proceso que claramente un operador no hará constantemente. Hablando en la parte de eficiencia, el formato txt en archivo abarca mas espacio en memoria que el binario pero aun con esa pequeña desventaja sigue siendo superior utilizar txt en este caso.
+
+Por otra parte, el flujo de telemetria cruda es mejor utilizar un formato binario, ya que se menciona que esta información almacenada será utilizada por algoritmos Machine Learning, por lo que la información no tiene que estar en lenguaje humano que ofrece el formato texto. Entonces es mejor darle un formato binario y ya no se necesitaría compilar esto aunque eso si, hay una pequeña desventaja y en caso de que el programador quiera acceder a esta información y comprobar que se esta realizando el paso de información de manera correcta, tendrá que compilar el archivo para que le de un archivo legible.
+
+
+Ejercicio 2: Manipulación de Punteros de Archivo (Offsets)
+
+
+El operador A ftell(fp) devolverá un cero y se quedara el cursor al final del archivo. Ya que 0 indica la posición a la que ira y SEEK_END define como estará el cursor, en este caso al final.
+
+El operador B regresa al inicio el cursor. Ya que 2*8(que es lo que vale el tamaño de la estructura) indica la posición a la que ira y SEEK_END define como estará el cursor, en este caso al final.
+
+
+El operador C ftell(fp) devolverá la posición 16 y el cursor se quedara en el inicio del archivo.
+
+El operador D  ftell(fp) devolverá la posición -8 y el cursor se quedara en esa misma posicion. Ya que el -sizeof arroja el tamaño de la estructura pero con el signo negativo y SEEK_CUR deja el cursor en esa poscion actual.
+
+
+Ejercicio 3: Depuración de Resiliencia en I/O
+
+El primer error como se menciona es que no hay una validación para el archivo y esto implica que el sistema operativo intente buscar ese archivo por todo el equipo, cosa que ya hace un consumo de recursos pero cuando pasa a la siguiente linea ahora se quiere acceder a cierta información de ese archivo que no existe y esto aumenta que el equipo de alguna manera intente encontrar esta información, lo que provoca un cierre abrupto del programa con el error de que no existe el archivo.
+
+El segundo error es que la función "FEOF" tiene un problema cuando se trata de caracteres ya que al final de la cadena siempre devuelve el valor Nulo y eso provoca que al intentar pasar al siguiente usuario falle y se finalice la lectura del archivo
+
+Corrección del código:
+
+void procesar_usuarios(){
+	char nombre[50];
+	FILE *archivo = fopen("usuarios.txt","r");
+	if(archivo == NULL){
+		printf("No se encontró el archivo");
+		return;
+	}
+	while (fgets(nombre, sizeof nombre, archivo) != NULL){
+		printf("\"%s\"\n", nombre);
+	}
+	fclose(archivo);
+}
+	
+
+
+
+
+
